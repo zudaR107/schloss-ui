@@ -1,0 +1,8 @@
+/*
+ * Placeholder — shared design tokens land in a follow-up issue
+ * (schloss-ui#5). This file exists now so the build/publish pipeline
+ * has a real second entry point to exercise end to end.
+ */
+:root {
+  color-scheme: light dark;
+}
