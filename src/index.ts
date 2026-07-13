@@ -21,3 +21,12 @@ export type { FieldInputProps, FieldProps, FieldSelectProps } from './components
 
 export { Modal } from './components/Modal'
 export type { ModalAction, ModalProps } from './components/Modal'
+
+export { StatTile } from './components/StatTile'
+export type { StatTileProps } from './components/StatTile'
+
+export { Amount } from './components/Amount'
+export type { AmountDelta, AmountProps } from './components/Amount'
+
+export { Sparkline } from './components/Sparkline'
+export type { SparklineProps } from './components/Sparkline'

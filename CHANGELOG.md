@@ -60,6 +60,22 @@ fit best; add a new section if none fits.
   right-aligned footer built from `Button` - callers put the primary
   action last so it's rightmost. Card uses `--shadow-lg` instead of a
   flat 1px border.
+- `StatTile`: a small summary card (label + tabular-nums value) - the
+  same shape as kuvert's Budget "Осталось распределить" strip,
+  generalized so other pages can show a quick summary above their
+  content instead of empty space before a table.
+- `Amount`: enforces sign-based coloring everywhere (positive
+  `--success` + "+", negative `--danger` + real minus sign U+2212, zero
+  stays `--text-primary` with no prefix) - today this is applied
+  inconsistently (kuvert's Budget "Available" column colors by sign,
+  account balances and transaction amounts elsewhere don't). Takes the
+  raw signed value only to decide color/prefix; the caller still
+  supplies the formatted magnitude text (currency/locale formatting
+  stays the caller's concern, not this package's). Optional delta
+  indicator (▲/▼ + percentage).
+- `Sparkline`: a minimal bar-based mini chart (no axis, no labels,
+  `--accent`-colored bars, `aria-hidden` since it's purely decorative)
+  for a quick trend glance next to a stat.
 
 ## Fixes
 - `Button`, `Header`'s settings/logout icon buttons, and
