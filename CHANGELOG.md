@@ -14,3 +14,13 @@ fit best; add a new section if none fits.
   test/build on every push and PR; a tag-triggered `publish.yml` builds
   and publishes on any `v*` tag, after checking the tag matches
   `package.json`'s version.
+
+## Design tokens
+- `src/tokens.css`: the core tokens already byte-identical across
+  schloss/schlussel/kuvert (radius, shadow, font, neutral/text colors,
+  semantic success/warning/danger/info) for light/dark/oled/sepia themes,
+  extracted into one file with unchanged token names. `--accent`,
+  `--accent-hover`, `--accent-muted`, `--accent-text`, and
+  `--sidebar-accent` are deliberately left out - documented in
+  README.md as a per-service contract instead, since they're each
+  service's own brand identity, not shared state.
