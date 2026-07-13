@@ -15,3 +15,9 @@ export type { BadgeProps, BadgeVariant } from './components/Badge'
 
 export { SegmentedControl } from './components/SegmentedControl'
 export type { SegmentedControlOption, SegmentedControlProps } from './components/SegmentedControl'
+
+export { Field } from './components/Field'
+export type { FieldInputProps, FieldProps, FieldSelectProps } from './components/Field'
+
+export { Modal } from './components/Modal'
+export type { ModalAction, ModalProps } from './components/Modal'

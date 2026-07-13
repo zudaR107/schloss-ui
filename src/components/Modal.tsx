@@ -1,0 +1,150 @@
+import { useEffect, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
+import { X } from 'lucide-react'
+import { Button, type ButtonVariant } from './Button'
+import { useHover } from '../hooks/useHover'
+
+export interface ModalAction {
+  label: string
+  onClick: () => void
+  variant?: ButtonVariant
+}
+
+export interface ModalProps {
+  open: boolean
+  onClose: () => void
+  title: string
+  /** Optional icon badge tying the dialog to its context, e.g. a wallet icon for "Новый счёт". */
+  icon?: ReactNode
+  children: ReactNode
+  /** Rendered right-aligned; put the primary action last so it's rightmost. */
+  actions?: ModalAction[]
+}
+
+function CloseButton({ onClick }: { onClick: () => void }) {
+  const hover = useHover()
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title="Закрыть"
+      aria-label="Закрыть"
+      onMouseEnter={hover.onMouseEnter}
+      onMouseLeave={hover.onMouseLeave}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: hover.hovered ? 'var(--bg-base)' : 'none',
+        border: 'none',
+        borderRadius: 'var(--radius-sm)',
+        cursor: 'pointer',
+        color: hover.hovered ? 'var(--text-primary)' : 'var(--text-secondary)',
+        padding: 6,
+        transition: 'background 150ms, color 150ms',
+      }}
+    >
+      <X size={16} strokeWidth={2} />
+    </button>
+  )
+}
+
+export function Modal({ open, onClose, title, icon, children, actions }: ModalProps) {
+  useEffect(() => {
+    if (!open) return
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [open, onClose])
+
+  if (!open) return null
+
+  return createPortal(
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 100,
+        background: 'rgba(0, 0, 0, 0.4)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '1rem',
+      }}
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        style={{
+          width: '100%',
+          maxWidth: 420,
+          maxHeight: '90vh',
+          overflowY: 'auto',
+          padding: '1.5rem',
+          background: 'var(--bg-elevated)',
+          borderRadius: 'var(--radius-lg)',
+          boxShadow: 'var(--shadow-lg)',
+        }}
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '0.75rem',
+            marginBottom: '1.25rem',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+            {icon && (
+              <div
+                style={{
+                  width: 26,
+                  height: 26,
+                  flexShrink: 0,
+                  borderRadius: 7,
+                  background: 'var(--accent-muted)',
+                  color: 'var(--accent)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {icon}
+              </div>
+            )}
+            <h2 style={{ margin: 0, fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+              {title}
+            </h2>
+          </div>
+          <CloseButton onClick={onClose} />
+        </div>
+
+        {children}
+
+        {actions && actions.length > 0 && (
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: '0.5rem',
+              marginTop: '1.5rem',
+            }}
+          >
+            {actions.map((action) => (
+              <Button key={action.label} variant={action.variant ?? 'ghost'} onClick={action.onClick}>
+                {action.label}
+              </Button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>,
+    document.body,
+  )
+}
