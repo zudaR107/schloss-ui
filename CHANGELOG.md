@@ -49,6 +49,17 @@ fit best; add a new section if none fits.
 - `SegmentedControl`: replaces the two-separate-buttons filter pattern
   (e.g. kuvert's Debts Активные/Закрытые toggle) with one container and
   an active-segment highlight.
+- `Field`: a labeled input/select wrapper with a visible focus ring
+  (border + `--accent-muted` shadow), an optional prefix slot (currency
+  symbols on amount fields), a select variant with a trailing chevron,
+  and error text rendered below the field. Generates an id via `useId`
+  when the caller doesn't supply one, so the label is always properly
+  associated via `htmlFor`.
+- `Modal`: header row with an optional context icon badge, a real
+  icon close-button (not a bare "×" glyph), a plain body slot, and a
+  right-aligned footer built from `Button` - callers put the primary
+  action last so it's rightmost. Card uses `--shadow-lg` instead of a
+  flat 1px border.
 
 ## Fixes
 - `Button`, `Header`'s settings/logout icon buttons, and
@@ -57,3 +68,10 @@ fit best; add a new section if none fits.
   with a real regression versus the CSS-class-based buttons they
   replace. Fixed with an internal `useHover` hook (mouseenter/
   mouseleave state), not exported from the package.
+- `Field`'s select-mode `prefix` prop collided with the native RDFa
+  `prefix` attribute `SelectHTMLAttributes` inherits, breaking
+  typechecking for a `ReactNode` prefix in select mode (input mode was
+  unaffected). Fixed by omitting the native attribute the same way
+  input mode already did. Also fixed a shorthand/longhand `border` vs
+  `borderColor` mix in the focus-ring style that triggered a React
+  dev-mode warning.
