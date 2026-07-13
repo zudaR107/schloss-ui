@@ -49,6 +49,15 @@
     --sidebar-bg:          #1e2130;
     --sidebar-text:        #8b95a8;
     --sidebar-text-active: #ffffff;
+
+    --badge-success-bg:   #ecfdf5;
+    --badge-success-text: #059669;
+    --badge-danger-bg:    #fef2f2;
+    --badge-danger-text:  #dc2626;
+    --badge-info-bg:      #eef2ff;
+    --badge-info-text:    #4f46e5;
+    --badge-warning-bg:   #fffbeb;
+    --badge-warning-text: #b45309;
   }
 
   /* Dark */
@@ -81,6 +90,15 @@
     --sidebar-bg:          #12141f;
     --sidebar-text:        #8b95a8;
     --sidebar-text-active: #f1f3f8;
+
+    --badge-success-bg:   #0d2b21;
+    --badge-success-text: #34d399;
+    --badge-danger-bg:    #2c1518;
+    --badge-danger-text:  #f87171;
+    --badge-info-bg:      #1c1f3a;
+    --badge-info-text:    #818cf8;
+    --badge-warning-bg:   #2b2210;
+    --badge-warning-text: #fbbf24;
   }
 
   /* OLED */
@@ -113,6 +131,16 @@
     --sidebar-bg:          #000000;
     --sidebar-text:        #64748b;
     --sidebar-text-active: #f8fafc;
+
+    /* Not separately specified - mirrors dark's badge palette (both dark-family). */
+    --badge-success-bg:   #0d2b21;
+    --badge-success-text: #34d399;
+    --badge-danger-bg:    #2c1518;
+    --badge-danger-text:  #f87171;
+    --badge-info-bg:      #1c1f3a;
+    --badge-info-text:    #818cf8;
+    --badge-warning-bg:   #2b2210;
+    --badge-warning-text: #fbbf24;
   }
 
   /* Sepia */
@@ -141,5 +169,15 @@
     --sidebar-bg:          #2c2215;
     --sidebar-text:        #b8a98e;
     --sidebar-text-active: #fdf8f0;
+
+    /* Not separately specified - mirrors light's badge palette (both light-family). */
+    --badge-success-bg:   #ecfdf5;
+    --badge-success-text: #059669;
+    --badge-danger-bg:    #fef2f2;
+    --badge-danger-text:  #dc2626;
+    --badge-info-bg:      #eef2ff;
+    --badge-info-text:    #4f46e5;
+    --badge-warning-bg:   #fffbeb;
+    --badge-warning-text: #b45309;
   }
 }
