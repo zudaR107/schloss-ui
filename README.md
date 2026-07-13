@@ -28,6 +28,33 @@ pattern.
 Early scaffolding — see the [issue tracker](https://github.com/zudaR107/schloss-ui/issues)
 for the buildout plan.
 
+## Installing
+
+Published to GitHub Packages, not npmjs.com. Consumers need a `.npmrc`
+pointing the `@zudar107` scope at it:
+
+```
+@zudar107:registry=https://npm.pkg.github.com
+```
+
+Then install as usual: `pnpm add @zudar107/schloss-ui`. Publishing a new
+version to GitHub Packages requires an authenticated `read:packages`
+token even though the package itself is public.
+
+## Developing
+
+```sh
+pnpm install
+pnpm lint       # oxlint
+pnpm typecheck  # tsc --noEmit
+pnpm test       # vitest
+pnpm build      # tsup -> dist/ (ESM + .d.ts)
+```
+
+Releases are tag-triggered: pushing a `v*` tag on `main` (after bumping
+`version` in `package.json` to match) runs the full check suite and
+publishes to GitHub Packages.
+
 ## License
 
 AGPL-3.0 — see [LICENSE](LICENSE).
