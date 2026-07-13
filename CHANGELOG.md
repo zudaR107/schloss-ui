@@ -49,3 +49,11 @@ fit best; add a new section if none fits.
 - `SegmentedControl`: replaces the two-separate-buttons filter pattern
   (e.g. kuvert's Debts Активные/Закрытые toggle) with one container and
   an active-segment highlight.
+
+## Fixes
+- `Button`, `Header`'s settings/logout icon buttons, and
+  `SegmentedControl`'s inactive segments had no hover feedback -
+  inline `style` objects can't express `:hover`, so all three shipped
+  with a real regression versus the CSS-class-based buttons they
+  replace. Fixed with an internal `useHover` hook (mouseenter/
+  mouseleave state), not exported from the package.

@@ -236,3 +236,49 @@ describe('Header', () => {
     expect(onLogout).toHaveBeenCalledTimes(1)
   })
 })
+
+describe('Header icon button hover feedback', () => {
+  it('changes the settings button background on hover and reverts on unhover, without affecting which buttons are present or its click behavior', async () => {
+    const user = userEvent.setup()
+    const onSettings = vi.fn()
+    const onLogout = vi.fn()
+    render(
+      <Header
+        logo={<span>LOGO-MARKER</span>}
+        homeHref="/"
+        user={{ name: 'Роберт Эванс' }}
+        onSettings={onSettings}
+        onLogout={onLogout}
+      />,
+    )
+
+    const settingsButton = screen.getByRole('button', { name: 'Настройки' })
+    const logoutButton = screen.getByRole('button', { name: 'Выйти' })
+    const originalBackground = settingsButton.style.background
+
+    await user.hover(settingsButton)
+    expect(settingsButton.style.background).not.toBe(originalBackground)
+
+    await user.unhover(settingsButton)
+    expect(settingsButton.style.background).toBe(originalBackground)
+
+    // Hovering does not change which buttons are present.
+    expect(
+      screen.getByRole('button', { name: 'Настройки' }),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Выйти' })).toBeInTheDocument()
+
+    // Click-after-hover still fires the callback as expected.
+    await user.hover(settingsButton)
+    await user.click(settingsButton)
+    expect(onSettings).toHaveBeenCalledTimes(1)
+    expect(onLogout).not.toHaveBeenCalled()
+
+    // Sanity check the logout button too.
+    const originalLogoutBackground = logoutButton.style.background
+    await user.hover(logoutButton)
+    expect(logoutButton.style.background).not.toBe(originalLogoutBackground)
+    await user.unhover(logoutButton)
+    expect(logoutButton.style.background).toBe(originalLogoutBackground)
+  })
+})

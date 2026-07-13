@@ -92,3 +92,45 @@ describe('SegmentedControl', () => {
     expect(onChange).toHaveBeenCalledWith('four')
   })
 })
+
+describe('SegmentedControl hover feedback', () => {
+  it('changes the inactive option color on hover', async () => {
+    const user = userEvent.setup()
+    render(
+      <SegmentedControl options={twoOptions} value="active" onChange={vi.fn()} />,
+    )
+
+    const inactiveButton = screen.getByRole('button', { name: 'Закрытые' })
+    const originalColor = inactiveButton.style.color
+
+    await user.hover(inactiveButton)
+    expect(inactiveButton.style.color).not.toBe(originalColor)
+
+    await user.unhover(inactiveButton)
+    expect(inactiveButton.style.color).toBe(originalColor)
+  })
+
+  it('does not lose its active appearance when the active option is hovered', async () => {
+    const user = userEvent.setup()
+    render(
+      <SegmentedControl options={twoOptions} value="active" onChange={vi.fn()} />,
+    )
+
+    const activeButton = screen.getByRole('button', { name: 'Активные' })
+    const inactiveButton = screen.getByRole('button', { name: 'Закрытые' })
+
+    expect(activeButton).toHaveAttribute('aria-pressed', 'true')
+
+    await user.hover(activeButton)
+
+    // Still marked as pressed/active from an a11y standpoint.
+    expect(activeButton).toHaveAttribute('aria-pressed', 'true')
+    // Still visually distinguished from the (un-hovered) inactive option -
+    // hovering the active segment must not make it collapse into the same
+    // look as an inactive one.
+    expect(activeButton.style.background).not.toBe(inactiveButton.style.background)
+
+    await user.unhover(activeButton)
+    expect(activeButton).toHaveAttribute('aria-pressed', 'true')
+  })
+})
