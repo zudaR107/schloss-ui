@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { LogOut, Settings } from 'lucide-react'
+import { useHover } from '../hooks/useHover'
 
 export interface HeaderUser {
   name: string
@@ -25,16 +26,39 @@ function initial(name: string): string {
   return name.trim().charAt(0).toUpperCase()
 }
 
-const iconButtonStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  background: 'none',
-  border: 'none',
-  cursor: 'pointer',
-  color: 'var(--text-secondary)',
-  padding: 4,
-} as const
+interface HeaderIconButtonProps {
+  onClick: () => void
+  title: string
+  children: ReactNode
+}
+
+function HeaderIconButton({ onClick, title, children }: HeaderIconButtonProps) {
+  const hover = useHover()
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title={title}
+      aria-label={title}
+      onMouseEnter={hover.onMouseEnter}
+      onMouseLeave={hover.onMouseLeave}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: hover.hovered ? 'var(--bg-base)' : 'none',
+        border: 'none',
+        borderRadius: 'var(--radius-sm)',
+        cursor: 'pointer',
+        color: hover.hovered ? 'var(--text-primary)' : 'var(--text-secondary)',
+        padding: 4,
+        transition: 'background 150ms, color 150ms',
+      }}
+    >
+      {children}
+    </button>
+  )
+}
 
 export function Header({
   logo,
@@ -87,26 +111,14 @@ export function Header({
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
           {rightSlot}
           {user && onSettings && (
-            <button
-              type="button"
-              onClick={onSettings}
-              title="Настройки"
-              aria-label="Настройки"
-              style={iconButtonStyle}
-            >
+            <HeaderIconButton onClick={onSettings} title="Настройки">
               <Settings size={16} strokeWidth={2} />
-            </button>
+            </HeaderIconButton>
           )}
           {user && onLogout && (
-            <button
-              type="button"
-              onClick={onLogout}
-              title="Выйти"
-              aria-label="Выйти"
-              style={iconButtonStyle}
-            >
+            <HeaderIconButton onClick={onLogout} title="Выйти">
               <LogOut size={16} strokeWidth={2} />
-            </button>
+            </HeaderIconButton>
           )}
           {user && (
             <div

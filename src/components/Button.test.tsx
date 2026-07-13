@@ -82,3 +82,33 @@ describe('Button', () => {
     expect(button).toHaveClass('my-custom-class')
   })
 })
+
+describe('Button hover feedback', () => {
+  it('changes the background on hover for the default (primary) variant and reverts on unhover', async () => {
+    const user = userEvent.setup()
+    render(<Button>Hover me</Button>)
+    const button = screen.getByRole('button', { name: 'Hover me' })
+
+    const originalBackground = button.style.background
+
+    await user.hover(button)
+    expect(button.style.background).not.toBe(originalBackground)
+
+    await user.unhover(button)
+    expect(button.style.background).toBe(originalBackground)
+  })
+
+  it('changes the background on hover for the ghost variant and reverts on unhover', async () => {
+    const user = userEvent.setup()
+    render(<Button variant="ghost">Hover ghost</Button>)
+    const button = screen.getByRole('button', { name: 'Hover ghost' })
+
+    const originalBackground = button.style.background
+
+    await user.hover(button)
+    expect(button.style.background).not.toBe(originalBackground)
+
+    await user.unhover(button)
+    expect(button.style.background).toBe(originalBackground)
+  })
+})

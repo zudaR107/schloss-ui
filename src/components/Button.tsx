@@ -1,4 +1,5 @@
-import type { ButtonHTMLAttributes, CSSProperties } from 'react'
+import type { ButtonHTMLAttributes, CSSProperties, MouseEventHandler } from 'react'
+import { useHover } from '../hooks/useHover'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger'
 
@@ -29,11 +30,28 @@ const VARIANT_STYLES: Record<ButtonVariant, CSSProperties> = {
   },
 }
 
-export function Button({ variant = 'primary', style, ...rest }: ButtonProps) {
+const VARIANT_HOVER_STYLES: Record<ButtonVariant, CSSProperties> = {
+  primary: { background: 'var(--accent-hover)' },
+  secondary: { background: 'var(--accent)', color: 'var(--text-inverted)' },
+  ghost: { background: 'var(--bg-base)', color: 'var(--text-primary)' },
+  danger: { background: 'var(--danger)', color: 'var(--text-inverted)' },
+}
+
+function chain(a?: MouseEventHandler<HTMLButtonElement>, b?: MouseEventHandler<HTMLButtonElement>): MouseEventHandler<HTMLButtonElement> {
+  return (event) => {
+    a?.(event)
+    b?.(event)
+  }
+}
+
+export function Button({ variant = 'primary', style, onMouseEnter, onMouseLeave, ...rest }: ButtonProps) {
+  const hover = useHover()
   return (
     <button
       type="button"
       {...rest}
+      onMouseEnter={chain(onMouseEnter, hover.onMouseEnter)}
+      onMouseLeave={chain(onMouseLeave, hover.onMouseLeave)}
       style={{
         display: 'inline-flex',
         alignItems: 'center',
@@ -47,7 +65,9 @@ export function Button({ variant = 'primary', style, ...rest }: ButtonProps) {
         cursor: 'pointer',
         outline: 'none',
         textDecoration: 'none',
+        transition: 'background 150ms, color 150ms',
         ...VARIANT_STYLES[variant],
+        ...(hover.hovered ? VARIANT_HOVER_STYLES[variant] : null),
         ...style,
       }}
     />
