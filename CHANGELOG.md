@@ -24,3 +24,14 @@ fit best; add a new section if none fits.
   `--sidebar-accent` are deliberately left out - documented in
   README.md as a per-service contract instead, since they're each
   service's own brand identity, not shared state.
+
+## Components
+- `Header`: the logo slot is itself the home link (no separate visible
+  "На главную" text); a user's name is shown as a single-initial avatar
+  circle instead of text; settings/logout are icon-only buttons gated on
+  a user being present; `leftSlot`/`rightSlot` cover service-specific
+  extras (a mobile nav toggle, a theme toggle).
+- `Footer`: extracted as-is, parameterized by `serviceName`.
+- `EmptyState`: replaces raw-emoji empty states with an accent-tinted
+  icon badge, a title, one sentence of copy, and a primary action
+  button.
