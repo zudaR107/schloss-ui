@@ -33,3 +33,6 @@ export type { SparklineProps } from './components/Sparkline'
 
 export { Toast } from './components/Toast'
 export type { ToastProps, ToastVariant } from './components/Toast'
+
+export { ICON_SIZE } from './iconSize'
+export type { IconSizeName } from './iconSize'

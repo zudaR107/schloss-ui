@@ -25,8 +25,17 @@ pattern.
 
 ## Status
 
-Early scaffolding — see the [issue tracker](https://github.com/zudaR107/schloss-ui/issues)
-for the buildout plan.
+Tokens and components are done; consumer adoption (schloss, schlussel,
+kuvert) hasn't started yet — see the [issue tracker](https://github.com/zudaR107/schloss-ui/issues)
+for what's left.
+
+## Components
+
+`Header`, `Footer`, `EmptyState`, `Button`, `Badge`, `SegmentedControl`,
+`Field`, `Modal`, `StatTile`, `Amount`, `Sparkline`, `Toast` — all
+exported from the package root (`import { Button } from
+'@zudar107/schloss-ui'`), styled entirely from the shared tokens plus
+each consumer's own `--accent`.
 
 ## Installing
 
@@ -74,6 +83,43 @@ value) because it's accent-derived, not neutral — leaving it in the
 shared file would silently keep every service's sidebar highlight blue
 regardless of its own `--accent`, the exact kind of accidental-default
 bleed this package exists to prevent.
+
+## Icons
+
+[lucide-react](https://lucide.dev) is the canonical icon set across the
+platform (already used everywhere) — this isn't a component, just a
+contract so icon usage stops being re-derived ad hoc. Today's sizes
+(15/18/20/24px) and strokeWidth (2/2.2 mixed) are inconsistent across
+the three services; this is the fix.
+
+**Size** — reference `ICON_SIZE` (exported from the package) instead of
+a magic number:
+
+```ts
+import { ICON_SIZE } from '@zudar107/schloss-ui'
+
+<Settings size={ICON_SIZE.default} strokeWidth={2} />
+```
+
+| Name | Value | Use |
+|---|---|---|
+| `ICON_SIZE.dense` | 14px | Dense lists, inline with small text |
+| `ICON_SIZE.default` | 16px | Nav items, buttons, form fields |
+| `ICON_SIZE.emphasis` | 20px | Page headers, the shared `Header` component |
+| `ICON_SIZE.illustrative` | 28px | Empty states, illustrative badges |
+
+**strokeWidth: 2, always** — matches lucide-react's own default. A few
+brand-mark badges use 2.2 today; standardize down to 2 everywhere,
+including those.
+
+**Color** — four states, no in-between "eyeballed" grays:
+
+| State | Token | When |
+|---|---|---|
+| Muted | `--text-secondary` | Default, secondary action |
+| Primary | `--text-primary` | Structural, part of content rather than an action |
+| Accent | `--accent` | Active/selected, e.g. the current nav item |
+| White | `#ffffff` / `--text-inverted` | Inside a filled `--accent` surface (a badge, a primary button) |
 
 ## Developing
 

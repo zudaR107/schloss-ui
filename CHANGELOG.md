@@ -84,6 +84,17 @@ fit best; add a new section if none fits.
   so screen readers announce it. First real usage lands with whichever
   consuming-repo issue wires up Modal-driven forms.
 
+## Icons
+- Not a component - a written contract (in README.md), so icon usage
+  stops being re-derived ad hoc. Today's sizes (15/18/20/24px) and
+  strokeWidth (2/2.2 mixed) are inconsistent across the three services.
+  lucide-react stays the canonical set. Exports `ICON_SIZE` (`dense: 14,
+  default: 16, emphasis: 20, illustrative: 28`) so consuming code
+  references a name instead of a magic number. `strokeWidth: 2` always.
+  Four-state color rule: muted (`--text-secondary`) default/secondary
+  action, primary (`--text-primary`) structural, accent (`--accent`)
+  active/selected, white inside a filled `--accent` surface.
+
 ## Fixes
 - `Button`, `Header`'s settings/logout icon buttons, and
   `SegmentedControl`'s inactive segments had no hover feedback -
