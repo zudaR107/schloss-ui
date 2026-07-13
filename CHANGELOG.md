@@ -35,3 +35,17 @@ fit best; add a new section if none fits.
 - `EmptyState`: replaces raw-emoji empty states with an accent-tinted
   icon badge, a title, one sentence of copy, and a primary action
   button.
+- `Button`: one pill of variants (`primary`/`secondary`/`ghost`/`danger`)
+  replacing today's ad hoc button classes, consistent radius/padding/
+  weight/icon-gap across all four.
+- `Badge`: one pill shape replacing today's three ad hoc status styles,
+  five semantic variants (`success`/`danger`/`info`/`warning`/`neutral`)
+  with an optional leading dot for state badges. Adds
+  `--badge-{success,danger,info,warning}-{bg,text}` tokens to
+  `tokens.css` - these intentionally differ from `--success` etc. (the
+  badge text shades are tuned for contrast against the muted
+  background, not identical to the general semantic color); `neutral`
+  reuses `--border`/`--text-secondary` directly.
+- `SegmentedControl`: replaces the two-separate-buttons filter pattern
+  (e.g. kuvert's Debts Активные/Закрытые toggle) with one container and
+  an active-segment highlight.
