@@ -30,3 +30,6 @@ export type { AmountDelta, AmountProps } from './components/Amount'
 
 export { Sparkline } from './components/Sparkline'
 export type { SparklineProps } from './components/Sparkline'
+
+export { Toast } from './components/Toast'
+export type { ToastProps, ToastVariant } from './components/Toast'

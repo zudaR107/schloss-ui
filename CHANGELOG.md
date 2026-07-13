@@ -76,6 +76,13 @@ fit best; add a new section if none fits.
 - `Sparkline`: a minimal bar-based mini chart (no axis, no labels,
   `--accent`-colored bars, `aria-hidden` since it's purely decorative)
   for a quick trend glance next to a stat.
+- `Toast`: a genuinely missing pattern, not a fix for an existing one -
+  a short, auto-dismissing (3.2s default, 0 disables it) confirmation
+  after a form save succeeds or a request fails. Compact card
+  (`--bg-surface`, `--border`, `--shadow-lg`), a small colored
+  status-icon circle (`success`/`error`), bottom-right, `role="status"`
+  so screen readers announce it. First real usage lands with whichever
+  consuming-repo issue wires up Modal-driven forms.
 
 ## Fixes
 - `Button`, `Header`'s settings/logout icon buttons, and
