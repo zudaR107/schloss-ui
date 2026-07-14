@@ -96,6 +96,70 @@ describe('Field (input mode)', () => {
     expect(screen.getByText('₽')).toBeInTheDocument()
   })
 
+  it('renders the suffix content alongside the input', () => {
+    render(
+      <Field
+        label="Пароль"
+        type="password"
+        value=""
+        onChange={() => {}}
+        suffix={
+          <button type="button" data-testid="suffix-btn">
+            toggle
+          </button>
+        }
+      />,
+    )
+
+    expect(screen.getByTestId('suffix-btn')).toBeInTheDocument()
+    expect(screen.getByRole('button')).toBeInTheDocument()
+    expect(screen.getByText('toggle')).toBeInTheDocument()
+  })
+
+  it('renders a suffix that actually receives pointer events (not inert/decoration-only)', async () => {
+    const user = userEvent.setup()
+    const onClick = vi.fn()
+
+    render(
+      <Field
+        label="Пароль"
+        type="password"
+        value=""
+        onChange={() => {}}
+        suffix={
+          <button type="button" data-testid="suffix-btn" onClick={onClick}>
+            toggle
+          </button>
+        }
+      />,
+    )
+
+    await user.click(screen.getByTestId('suffix-btn'))
+
+    expect(onClick).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not render any suffix content by default', () => {
+    render(<Field label="Сумма" value="" onChange={() => {}} />)
+    expect(screen.queryByTestId('suffix-btn')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
+  })
+
+  it('renders both prefix and suffix at the same time, independently', () => {
+    render(
+      <Field
+        label="Сумма"
+        value=""
+        onChange={() => {}}
+        prefix={<span data-testid="prefix-marker">₽</span>}
+        suffix={<button type="button" data-testid="suffix-btn">toggle</button>}
+      />,
+    )
+
+    expect(screen.getByTestId('prefix-marker')).toBeInTheDocument()
+    expect(screen.getByTestId('suffix-btn')).toBeInTheDocument()
+  })
+
   it('does not throw on focus/blur, and fires user-supplied onFocus/onBlur callbacks', async () => {
     const user = userEvent.setup()
     const onFocus = vi.fn()
@@ -205,5 +269,33 @@ describe('Field (select mode)', () => {
     )
 
     expect(screen.getByTestId('select-prefix-marker')).toBeInTheDocument()
+  })
+
+  it('renders a suffix in select mode that actually receives pointer events', async () => {
+    const user = userEvent.setup()
+    const onClick = vi.fn()
+
+    render(
+      <Field
+        as="select"
+        label="Категория"
+        value="a"
+        onChange={() => {}}
+        suffix={
+          <button type="button" data-testid="select-suffix-btn" onClick={onClick}>
+            toggle
+          </button>
+        }
+      >
+        <option value="a">A</option>
+      </Field>,
+    )
+
+    expect(screen.getByTestId('select-suffix-btn')).toBeInTheDocument()
+    expect(screen.getByRole('button')).toBeInTheDocument()
+
+    await user.click(screen.getByTestId('select-suffix-btn'))
+
+    expect(onClick).toHaveBeenCalledTimes(1)
   })
 })
