@@ -6,6 +6,8 @@ interface FieldSharedProps {
   error?: string
   /** For currency symbols on amount fields, rendered inline before the input. */
   prefix?: ReactNode
+  /** For an interactive control (e.g. a password visibility toggle), rendered inline after the input. Unlike prefix, receives pointer events. */
+  suffix?: ReactNode
 }
 
 export type FieldInputProps = FieldSharedProps &
@@ -69,6 +71,23 @@ function FieldPrefix({ children }: { children: ReactNode }) {
   )
 }
 
+function FieldSuffix({ children }: { children: ReactNode }) {
+  return (
+    <span
+      style={{
+        position: 'absolute',
+        right: '0.75rem',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        color: 'var(--text-muted)',
+        fontSize: '0.875rem',
+      }}
+    >
+      {children}
+    </span>
+  )
+}
+
 function FieldError({ children }: { children: ReactNode }) {
   return (
     <p style={{ margin: '0.375rem 0 0', fontSize: '0.75rem', color: 'var(--danger)' }}>
@@ -77,7 +96,7 @@ function FieldError({ children }: { children: ReactNode }) {
   )
 }
 
-function InputField({ label, error, prefix, id, style, onFocus, onBlur, ...rest }: FieldInputProps) {
+function InputField({ label, error, prefix, suffix, id, style, onFocus, onBlur, ...rest }: FieldInputProps) {
   const [focused, setFocused] = useState(false)
   const generatedId = useId()
   const fieldId = id ?? generatedId
@@ -101,17 +120,19 @@ function InputField({ label, error, prefix, id, style, onFocus, onBlur, ...rest 
           style={{
             ...fieldBoxStyle,
             paddingLeft: prefix ? '1.75rem' : undefined,
+            paddingRight: suffix ? '2.25rem' : undefined,
             ...(focused ? focusRingStyle : null),
             ...style,
           }}
         />
+        {suffix && <FieldSuffix>{suffix}</FieldSuffix>}
       </div>
       {error && <FieldError>{error}</FieldError>}
     </div>
   )
 }
 
-function SelectField({ label, error, prefix, id, style, onFocus, onBlur, ...rest }: FieldSelectProps) {
+function SelectField({ label, error, prefix, suffix, id, style, onFocus, onBlur, ...rest }: FieldSelectProps) {
   const [focused, setFocused] = useState(false)
   const generatedId = useId()
   const fieldId = id ?? generatedId
@@ -136,24 +157,28 @@ function SelectField({ label, error, prefix, id, style, onFocus, onBlur, ...rest
             ...fieldBoxStyle,
             appearance: 'none',
             paddingLeft: prefix ? '1.75rem' : undefined,
-            paddingRight: '2rem',
+            paddingRight: suffix ? '2.25rem' : '2rem',
             cursor: 'pointer',
             ...(focused ? focusRingStyle : null),
             ...style,
           }}
         />
-        <ChevronDown
-          size={16}
-          strokeWidth={2}
-          style={{
-            position: 'absolute',
-            right: '0.65rem',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            color: 'var(--text-secondary)',
-            pointerEvents: 'none',
-          }}
-        />
+        {suffix ? (
+          <FieldSuffix>{suffix}</FieldSuffix>
+        ) : (
+          <ChevronDown
+            size={16}
+            strokeWidth={2}
+            style={{
+              position: 'absolute',
+              right: '0.65rem',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: 'var(--text-secondary)',
+              pointerEvents: 'none',
+            }}
+          />
+        )}
       </div>
       {error && <FieldError>{error}</FieldError>}
     </div>

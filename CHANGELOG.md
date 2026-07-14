@@ -55,6 +55,10 @@ fit best; add a new section if none fits.
   and error text rendered below the field. Generates an id via `useId`
   when the caller doesn't supply one, so the label is always properly
   associated via `htmlFor`.
+- `Field`: added a `suffix` slot, symmetric to `prefix` but on the right
+  and interactive (unlike `prefix`, it receives pointer events) - for an
+  overlay control like a password-visibility toggle. In select mode, a
+  supplied `suffix` replaces the default trailing chevron.
 - `Modal`: header row with an optional context icon badge, a real
   icon close-button (not a bare "×" glyph), a plain body slot, and a
   right-aligned footer built from `Button` - callers put the primary
