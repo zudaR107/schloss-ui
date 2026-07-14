@@ -74,4 +74,73 @@ describe('Footer', () => {
     const githubLink = screen.getByRole('link', { name: 'GitHub' })
     expect(githubLink).toHaveAttribute('href', 'https://github.com/zudaR107')
   })
+
+  it('renders the description text when provided', () => {
+    render(
+      <Footer
+        serviceName="Kuvert"
+        description="конвертное бюджетирование"
+      />,
+    )
+
+    expect(
+      screen.getByText('конвертное бюджетирование'),
+    ).toBeInTheDocument()
+  })
+
+  it('still renders the exact open-source/self-hosted text when a description is also provided', () => {
+    render(
+      <Footer
+        serviceName="Kuvert"
+        description="конвертное бюджетирование"
+      />,
+    )
+
+    expect(
+      screen.getByText('Kuvert — открытый код, свой хостинг'),
+    ).toBeInTheDocument()
+  })
+
+  it('does not render extra description content when description is omitted', () => {
+    const { container } = render(<Footer serviceName="Kuvert" />)
+
+    expect(
+      screen.getByText('Kuvert — открытый код, свой хостинг'),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText('конвертное бюджетирование'),
+    ).not.toBeInTheDocument()
+    expect(container.textContent).not.toContain('undefined')
+  })
+
+  it('does not render extra description content when description is an empty string', () => {
+    const { container } = render(
+      <Footer serviceName="Kuvert" description="" />,
+    )
+
+    expect(
+      screen.getByText('Kuvert — открытый код, свой хостинг'),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText('конвертное бюджетирование'),
+    ).not.toBeInTheDocument()
+    expect(container.textContent).not.toContain('undefined')
+  })
+
+  it('renders both description and version simultaneously without interfering with each other', () => {
+    render(
+      <Footer
+        serviceName="Kuvert"
+        description="конвертное бюджетирование"
+        version="1.4.0"
+      />,
+    )
+
+    expect(
+      screen.getByText('конвертное бюджетирование'),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('Kuvert — открытый код, свой хостинг · v1.4.0'),
+    ).toBeInTheDocument()
+  })
 })
