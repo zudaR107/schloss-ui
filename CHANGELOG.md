@@ -113,3 +113,17 @@ fit best; add a new section if none fits.
   input mode already did. Also fixed a shorthand/longhand `border` vs
   `borderColor` mix in the focus-ring style that triggered a React
   dev-mode warning.
+- `Field`'s left padding was silently too small on every field in
+  every consumer app - the same shorthand/longhand class of bug as
+  above, this time mixing the `padding` shorthand with conditionally-set
+  `paddingLeft`/`paddingRight` longhands (only present when `prefix`/
+  `suffix` were given). jsdom's style engine doesn't reproduce the
+  browser's exact cascade resolution here, so the test suite never
+  caught it - only visible in a real browser. Fixed by never mixing
+  shorthand and longhand padding: the base style now only sets
+  `paddingTop`/`paddingBottom`, and `paddingLeft`/`paddingRight` are
+  always computed as concrete values (never omitted/undefined).
+- `Footer` gained an optional `version` prop (e.g. `"1.4.0"`, no
+  leading "v"), rendered as `"· v1.4.0"` after the tagline - so each
+  consumer app can show its own package.json version instead of no
+  version at all.

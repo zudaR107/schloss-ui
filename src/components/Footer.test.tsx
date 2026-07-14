@@ -31,4 +31,47 @@ describe('Footer', () => {
       expect.stringContaining('noreferrer'),
     )
   })
+
+  it('renders the version text when a version is provided', () => {
+    const { container } = render(
+      <Footer serviceName="Kuvert" version="1.4.0" />,
+    )
+
+    expect(container.textContent).toContain('·')
+    expect(container.textContent).toContain('v1.4.0')
+    expect(container.textContent).toContain(
+      'Kuvert — открытый код, свой хостинг · v1.4.0',
+    )
+  })
+
+  it('does not render a version fragment when version is omitted', () => {
+    const { container } = render(<Footer serviceName="Kuvert" />)
+
+    expect(
+      screen.getByText('Kuvert — открытый код, свой хостинг'),
+    ).toBeInTheDocument()
+    expect(container.textContent).not.toContain('·')
+    expect(container.textContent).not.toContain('undefined')
+  })
+
+  it('does not render a version fragment when version is an empty string', () => {
+    const { container } = render(<Footer serviceName="Kuvert" version="" />)
+
+    expect(
+      screen.getByText('Kuvert — открытый код, свой хостинг'),
+    ).toBeInTheDocument()
+    expect(container.textContent).not.toContain('·')
+    expect(container.textContent).not.toContain('undefined')
+  })
+
+  it('renders both the service name and version simultaneously, alongside the GitHub link', () => {
+    render(<Footer serviceName="Schloss" version="2.0.1" />)
+
+    expect(
+      screen.getByText('Schloss — открытый код, свой хостинг · v2.0.1'),
+    ).toBeInTheDocument()
+
+    const githubLink = screen.getByRole('link', { name: 'GitHub' })
+    expect(githubLink).toHaveAttribute('href', 'https://github.com/zudaR107')
+  })
 })

@@ -18,11 +18,19 @@ export type FieldSelectProps = FieldSharedProps &
 
 export type FieldProps = FieldInputProps | FieldSelectProps
 
+// paddingLeft/paddingRight are deliberately not part of this shared
+// shorthand-free base - InputField/SelectField always compute both as
+// concrete values (never omitted/undefined). Mixing the "padding"
+// shorthand with "paddingLeft"/"paddingRight" longhands in the same
+// conditionally-computed style object is exactly the shorthand/longhand
+// conflict React warns about ("can lead to unexpected results") - it
+// silently produced too little left padding on every field in practice.
 const fieldBoxStyle = {
   background: 'var(--bg-surface)',
   border: '1px solid var(--border)',
   borderRadius: 8,
-  padding: '0.5rem 0.75rem',
+  paddingTop: '0.5rem',
+  paddingBottom: '0.5rem',
   fontSize: '0.875rem',
   color: 'var(--text-primary)',
   outline: 'none',
@@ -119,8 +127,8 @@ function InputField({ label, error, prefix, suffix, id, style, onFocus, onBlur, 
           }}
           style={{
             ...fieldBoxStyle,
-            paddingLeft: prefix ? '1.75rem' : undefined,
-            paddingRight: suffix ? '2.25rem' : undefined,
+            paddingLeft: prefix ? '1.75rem' : '0.75rem',
+            paddingRight: suffix ? '2.25rem' : '0.75rem',
             ...(focused ? focusRingStyle : null),
             ...style,
           }}
@@ -156,7 +164,7 @@ function SelectField({ label, error, prefix, suffix, id, style, onFocus, onBlur,
           style={{
             ...fieldBoxStyle,
             appearance: 'none',
-            paddingLeft: prefix ? '1.75rem' : undefined,
+            paddingLeft: prefix ? '1.75rem' : '0.75rem',
             paddingRight: suffix ? '2.25rem' : '2rem',
             cursor: 'pointer',
             ...(focused ? focusRingStyle : null),
