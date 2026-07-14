@@ -127,3 +127,8 @@ fit best; add a new section if none fits.
   leading "v"), rendered as `"· v1.4.0"` after the tagline - so each
   consumer app can show its own package.json version instead of no
   version at all.
+- `Footer` gained an optional `description` prop - one short sentence
+  saying what the service does, rendered as its own line above the
+  existing tagline (kept as an exact, unchanged string - description
+  doesn't merge into it, so it can't break anything already querying
+  the old combined text).
