@@ -1,9 +1,11 @@
 export interface FooterProps {
   /** e.g. "Schloss", "Schlüssel", "Kuvert" - rendered as "{serviceName} — открытый код, свой хостинг". */
   serviceName: string
+  /** e.g. "1.4.0" (no leading "v") - the consuming app's own package.json version, shown as "· v1.4.0". Omit if the caller has no version to report. */
+  version?: string
 }
 
-export function Footer({ serviceName }: FooterProps) {
+export function Footer({ serviceName, version }: FooterProps) {
   return (
     <footer
       style={{
@@ -17,7 +19,10 @@ export function Footer({ serviceName }: FooterProps) {
         fontSize: '0.75rem',
       }}
     >
-      <span>{serviceName} — открытый код, свой хостинг</span>
+      <span>
+        {serviceName} — открытый код, свой хостинг
+        {version && ` · v${version}`}
+      </span>
       <a
         href="https://github.com/zudaR107"
         target="_blank"
