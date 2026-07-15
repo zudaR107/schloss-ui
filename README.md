@@ -39,16 +39,21 @@ each consumer's own `--accent`.
 
 ## Installing
 
-Published to GitHub Packages, not npmjs.com. Consumers need a `.npmrc`
-pointing the `@zudar107` scope at it:
+Not published to any registry — this is an internal package, consumed by
+each service as a git submodule linked through pnpm's `workspace:*`
+protocol. To add it to a new service:
 
 ```
-@zudar107:registry=https://npm.pkg.github.com
+git submodule add https://github.com/zudaR107/schloss-ui.git schloss-ui
 ```
 
-Then install as usual: `pnpm add @zudar107/schloss-ui`. Publishing a new
-version to GitHub Packages requires an authenticated `read:packages`
-token even though the package itself is public.
+Add `"schloss-ui"` to that repo's `pnpm-workspace.yaml` `packages:` list,
+add `"@zudar107/schloss-ui": "workspace:*"` to whichever `package.json`
+needs it, then `pnpm install`. schloss-ui is still consumed as its built
+`dist/` output (same `main`/`module`/`types`/`exports` as always), so run
+`pnpm --filter @zudar107/schloss-ui build` once before that service's own
+`dev`/`build`/`test` — the same step Dockerfiles and CI run before
+building/testing the consuming app.
 
 ## Design tokens
 
@@ -131,9 +136,12 @@ pnpm test       # vitest
 pnpm build      # tsup -> dist/ (ESM + .d.ts)
 ```
 
-Releases are tag-triggered: pushing a `v*` tag on `main` (after bumping
-`version` in `package.json` to match) runs the full check suite and
-publishes to GitHub Packages.
+No release/publish step - each consumer picks up changes by bumping its
+own `schloss-ui` submodule pointer to whatever commit on `main` it wants
+(`cd schloss-ui && git pull && cd .. && git add schloss-ui`), same as any
+other cross-repo bump on this platform. `version` in `package.json` is
+kept purely as a human-readable changelog marker, not tied to any tag or
+publish step.
 
 ## License
 
