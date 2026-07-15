@@ -53,11 +53,29 @@ export function Modal({ open, onClose, title, icon, children, actions }: ModalPr
   useEffect(() => {
     if (!open) return
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') onClose()
+      if (event.key === 'Escape') {
+        onClose()
+        return
+      }
+      // The Save/Cancel buttons live outside the <form> (children render
+      // it, actions render as siblings) so pages control button placement
+      // - but that means the browser's native implicit-submission (Enter
+      // in a field submits the nearest form) never fires: it requires
+      // either exactly one text field or a real submit button inside the
+      // form, neither of which is true here. Trigger the primary action
+      // (the last entry, by convention - see ModalProps.actions) instead,
+      // same as clicking it.
+      if (event.key === 'Enter' && actions && actions.length > 0) {
+        const target = event.target
+        if (target instanceof HTMLInputElement || target instanceof HTMLSelectElement) {
+          event.preventDefault()
+          actions[actions.length - 1]!.onClick()
+        }
+      }
     }
     document.addEventListener('keydown', onKeyDown)
     return () => document.removeEventListener('keydown', onKeyDown)
-  }, [open, onClose])
+  }, [open, onClose, actions])
 
   if (!open) return null
 

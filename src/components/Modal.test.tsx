@@ -170,4 +170,154 @@ describe('Modal', () => {
     expect(buttons).toHaveLength(1)
     expect(buttons[0]).toHaveAccessibleName('Закрыть')
   })
+
+  it('calls the last action onClick when Enter is pressed while focus is on an input field', async () => {
+    const user = userEvent.setup()
+    const onCancel = vi.fn()
+    const onSave = vi.fn()
+    render(
+      <Modal
+        open
+        onClose={vi.fn()}
+        title="Заголовок"
+        actions={[
+          { label: 'Отмена', onClick: onCancel },
+          { label: 'Сохранить', onClick: onSave, variant: 'primary' },
+        ]}
+      >
+        <form>
+          <input aria-label="Имя" />
+        </form>
+      </Modal>,
+    )
+
+    const input = screen.getByLabelText('Имя')
+    await user.click(input)
+    await user.keyboard('{Enter}')
+
+    expect(onSave).toHaveBeenCalledTimes(1)
+    expect(onCancel).not.toHaveBeenCalled()
+  })
+
+  it('calls the last action onClick when Enter is pressed while focus is on a select field', async () => {
+    const user = userEvent.setup()
+    const onCancel = vi.fn()
+    const onSave = vi.fn()
+    render(
+      <Modal
+        open
+        onClose={vi.fn()}
+        title="Заголовок"
+        actions={[
+          { label: 'Отмена', onClick: onCancel },
+          { label: 'Сохранить', onClick: onSave, variant: 'primary' },
+        ]}
+      >
+        <form>
+          <select aria-label="Категория">
+            <option value="a">A</option>
+            <option value="b">B</option>
+          </select>
+        </form>
+      </Modal>,
+    )
+
+    const select = screen.getByLabelText('Категория')
+    select.focus()
+    await user.keyboard('{Enter}')
+
+    expect(onSave).toHaveBeenCalledTimes(1)
+    expect(onCancel).not.toHaveBeenCalled()
+  })
+
+  it('does not call any action onClick when Enter is pressed while focus is not on an input or select', async () => {
+    const user = userEvent.setup()
+    const onCancel = vi.fn()
+    const onSave = vi.fn()
+    render(
+      <Modal
+        open
+        onClose={vi.fn()}
+        title="Заголовок"
+        actions={[
+          { label: 'Отмена', onClick: onCancel },
+          { label: 'Сохранить', onClick: onSave, variant: 'primary' },
+        ]}
+      >
+        <form>
+          <input aria-label="Имя" />
+        </form>
+      </Modal>,
+    )
+
+    expect(document.body).toHaveFocus()
+    await user.keyboard('{Enter}')
+
+    expect(onSave).not.toHaveBeenCalled()
+    expect(onCancel).not.toHaveBeenCalled()
+  })
+
+  it('still calls onClose when Escape is pressed while an input is focused and actions are present', async () => {
+    const user = userEvent.setup()
+    const onClose = vi.fn()
+    const onCancel = vi.fn()
+    const onSave = vi.fn()
+    render(
+      <Modal
+        open
+        onClose={onClose}
+        title="Заголовок"
+        actions={[
+          { label: 'Отмена', onClick: onCancel },
+          { label: 'Сохранить', onClick: onSave, variant: 'primary' },
+        ]}
+      >
+        <form>
+          <input aria-label="Имя" />
+        </form>
+      </Modal>,
+    )
+
+    const input = screen.getByLabelText('Имя')
+    await user.click(input)
+    await user.keyboard('{Escape}')
+
+    expect(onClose).toHaveBeenCalledTimes(1)
+    expect(onSave).not.toHaveBeenCalled()
+    expect(onCancel).not.toHaveBeenCalled()
+  })
+
+  it('does not throw when Enter is pressed in a focused input and actions is not provided', async () => {
+    const user = userEvent.setup()
+    render(
+      <Modal open onClose={vi.fn()} title="Заголовок">
+        <form>
+          <input aria-label="Имя" />
+        </form>
+      </Modal>,
+    )
+
+    const input = screen.getByLabelText('Имя')
+    await user.click(input)
+    await user.keyboard('{Enter}')
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
+
+  it('does not throw when Enter is pressed in a focused input and actions is an empty array', async () => {
+    const user = userEvent.setup()
+    render(
+      <Modal open onClose={vi.fn()} title="Заголовок" actions={[]}>
+        <form>
+          <input aria-label="Имя" />
+        </form>
+      </Modal>,
+    )
+
+    const input = screen.getByLabelText('Имя')
+    await user.click(input)
+    await user.keyboard('{Enter}')
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
 })

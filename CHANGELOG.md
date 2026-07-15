@@ -137,3 +137,8 @@ fit best; add a new section if none fits.
   accent-colored marker dot, a touch more weight (`600`), and a
   slightly larger size, so it reads as the deliberate one-line pitch
   it is instead of an afterthought.
+- `Modal`: pressing Enter in a field now submits the same way clicking
+  the primary action does. Its Save/Cancel buttons render outside the
+  `<form>` by design, so the browser's native implicit-submission
+  never had a submit button to find - Modal now triggers the last
+  (primary) action directly on Enter instead.
