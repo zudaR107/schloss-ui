@@ -2,8 +2,9 @@
 
 ## Supported versions
 
-Only the latest published version on GitHub Packages is supported —
-there are no maintained release branches.
+Only the latest commit on `main` is supported — there are no maintained
+release branches, and this package isn't published to any registry
+(consumers link it as a git submodule).
 
 ## Reporting a vulnerability
 

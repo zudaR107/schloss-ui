@@ -142,3 +142,10 @@ fit best; add a new section if none fits.
   `<form>` by design, so the browser's native implicit-submission
   never had a submit button to find - Modal now triggers the last
   (primary) action directly on Enter instead.
+- Stopped publishing to GitHub Packages - this is (and will stay) an
+  internal package for the platform's own services, and GitHub
+  Packages requires an authenticated token to install even a public
+  package, unlike npmjs.com. Consumers now add this repo as a git
+  submodule and link it via pnpm's `workspace:*` protocol instead;
+  removed the tag-triggered publish workflow and the now-dead
+  `publishConfig`/`files` package.json fields.
