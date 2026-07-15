@@ -11,21 +11,27 @@ export function Footer({ serviceName, description, version }: FooterProps) {
   return (
     <footer
       style={{
-        padding: '1rem 1.5rem',
+        padding: '1.25rem 1.5rem',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '0.25rem',
+        gap: '0.375rem',
         borderTop: '1px solid var(--border)',
         color: 'var(--text-muted)',
         fontSize: '0.75rem',
       }}
     >
       {description && (
-        <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>
-          {description}
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4375rem' }}>
+          <span
+            aria-hidden="true"
+            style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--accent)', flexShrink: 0 }}
+          />
+          <span style={{ color: 'var(--text-secondary)', fontWeight: 600, fontSize: '0.8125rem', letterSpacing: '-0.01em' }}>
+            {description}
+          </span>
+        </div>
       )}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
         <span>
