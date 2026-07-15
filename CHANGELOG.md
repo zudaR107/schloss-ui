@@ -132,3 +132,8 @@ fit best; add a new section if none fits.
   existing tagline (kept as an exact, unchanged string - description
   doesn't merge into it, so it can't break anything already querying
   the old combined text).
+- `Footer`'s `description` line was plain muted text with no visual
+  distinction from the rest of the footer - gave it a small
+  accent-colored marker dot, a touch more weight (`600`), and a
+  slightly larger size, so it reads as the deliberate one-line pitch
+  it is instead of an afterthought.
