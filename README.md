@@ -32,10 +32,27 @@ for what's left.
 ## Components
 
 `Header`, `Footer`, `EmptyState`, `Button`, `Badge`, `SegmentedControl`,
-`Field`, `Modal`, `StatTile`, `Amount`, `Sparkline`, `Toast` — all
-exported from the package root (`import { Button } from
-'@zudar107/schloss-ui'`), styled entirely from the shared tokens plus
-each consumer's own `--accent`.
+`Field`, `NumberField`, `AmountField`, `DateField`, `DateRangeField`,
+`Modal`, `StatTile`, `Amount`, `Sparkline`, `Toast` — all exported from
+the package root (`import { Button } from '@zudar107/schloss-ui'`),
+styled entirely from the shared tokens plus each consumer's own
+`--accent`.
+
+`NumberField`/`AmountField` display thousand-space-grouped numbers while
+keeping the caller's state as a plain unformatted string, and select an
+existing `"0"` on focus so the first keystroke replaces it instead of
+prepending. `AmountField` is `NumberField` with a currency-symbol prefix
+derived from an ISO 4217 `currencyCode` prop (defaults to `'RUB'`).
+`DateField`/`DateRangeField` are a custom Avito-style calendar (own
+popover, no native `<input type="date">`) speaking plain ISO
+`yyyy-mm-dd` strings — `DateRangeField` is a two-click range picker
+(first click = start, second = end, third restarts; a colored bar spans
+the selected range). Also exported: `handleArrowFieldNavigation` (attach
+to a `<form>`'s `onKeyDown` — ArrowUp/ArrowDown move focus between
+fields instead of the browser's native per-element behavior) and the low-
+level `formatGroupedNumber`/`parseGroupedNumber`/`currencySymbol`
+helpers `NumberField`/`AmountField` are built on, for bespoke inputs that
+need the same formatting without the full `Field` label/box chrome.
 
 ## Installing
 
