@@ -19,6 +19,18 @@ export type { SegmentedControlOption, SegmentedControlProps } from './components
 export { Field } from './components/Field'
 export type { FieldInputProps, FieldProps, FieldSelectProps } from './components/Field'
 
+export { NumberField } from './components/NumberField'
+export type { NumberFieldProps } from './components/NumberField'
+
+export { AmountField } from './components/AmountField'
+export type { AmountFieldProps } from './components/AmountField'
+
+export { DateField } from './components/DateField'
+export type { DateFieldProps } from './components/DateField'
+
+export { DateRangeField } from './components/DateRangeField'
+export type { DateRangeFieldProps } from './components/DateRangeField'
+
 export { Modal } from './components/Modal'
 export type { ModalAction, ModalProps } from './components/Modal'
 
@@ -36,3 +48,7 @@ export type { ToastProps, ToastVariant } from './components/Toast'
 
 export { ICON_SIZE } from './iconSize'
 export type { IconSizeName } from './iconSize'
+
+export { handleArrowFieldNavigation } from './lib/formNavigation'
+export { formatGroupedNumber, parseGroupedNumber } from './lib/numberFormat'
+export { currencySymbol } from './lib/currency'
