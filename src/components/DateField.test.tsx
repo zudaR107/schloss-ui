@@ -67,4 +67,43 @@ describe('DateField', () => {
       screen.queryByRole('button', { name: '2026-07-10' }),
     ).not.toBeInTheDocument()
   })
+
+  it('when the trigger is near the bottom of a short viewport, pulls the popover up just enough to stay on-screen, not far away from the trigger', async () => {
+    const user = userEvent.setup()
+    vi.spyOn(window, 'innerHeight', 'get').mockReturnValue(600)
+
+    // The anchor is DateField's own wrapper div, not the <input> the
+    // label points at - mock every element uniformly rather than trying
+    // to target one specific node.
+    const gbcrSpy = vi
+      .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+      .mockImplementation(function (this: HTMLElement) {
+        if (this.getAttribute('role') === 'dialog') {
+          // The popover is taller (340px) than the space actually left
+          // below the trigger (600 - 584 = 16px) - it must be pulled up.
+          const top = Number.parseFloat(this.style.top) || 0
+          return { top, bottom: top + 340, left: 0, right: 280, width: 280, height: 340, x: 0, y: top, toJSON() {} } as DOMRect
+        }
+        // Every other element is treated as sitting near the bottom of
+        // the (mocked) 600px viewport - including DateField's own
+        // wrapper div, which is what position is actually computed from.
+        return { top: 550, bottom: 580, left: 20, right: 200, width: 180, height: 30, x: 20, y: 550, toJSON() {} } as DOMRect
+      })
+
+    render(<DateField label="Дата" value="2026-07-15" onChange={vi.fn()} />)
+    const trigger = screen.getByLabelText('Дата')
+
+    await user.click(trigger)
+
+    const popover = screen.getByRole('dialog')
+    const finalTop = Number.parseFloat(popover.style.top)
+
+    // Fits entirely within the (mocked) 600px-tall viewport...
+    expect(finalTop + 340).toBeLessThanOrEqual(600)
+    // ...while staying anchored near the trigger (top: 550), not jumping
+    // to some unrelated part of the page.
+    expect(finalTop).toBeGreaterThan(200)
+
+    gbcrSpy.mockRestore()
+  })
 })

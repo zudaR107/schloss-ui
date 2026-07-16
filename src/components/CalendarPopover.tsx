@@ -3,11 +3,6 @@ import { createPortal } from 'react-dom'
 
 // Internal - not exported from the package.
 
-// No real measurement pass - just enough to decide "does it fit below".
-// Simpler and loop-free compared to measuring the actual rendered
-// popover and repositioning, at the cost of a rare few px of slack.
-const ESTIMATED_POPOVER_HEIGHT = 340
-
 interface CalendarPopoverProps {
   open: boolean
   onClose: () => void
@@ -18,20 +13,42 @@ interface CalendarPopoverProps {
 export function CalendarPopover({ open, onClose, anchorRef, children }: CalendarPopoverProps) {
   const popoverRef = useRef<HTMLDivElement | null>(null)
   const [position, setPosition] = useState<{ top: number; left: number } | null>(null)
+  // Guards the below-viewport correction pass (see the second effect) so
+  // it only ever nudges the position once per open - without this, each
+  // correction would trigger the effect again via the `position` state
+  // change it causes, forever re-measuring.
+  const correctedRef = useRef(false)
 
+  // Pass 1: always open directly below the trigger. This is right the
+  // overwhelming majority of the time and, critically, never moves the
+  // popover somewhere visually disconnected from the field it belongs to
+  // - unlike guessing a fixed popover height up front and deciding to
+  // flip above based on that guess, which (as seen in practice) can flip
+  // the calendar far from the trigger whenever the guess is off.
   useLayoutEffect(() => {
+    correctedRef.current = false
     if (!open) {
       setPosition(null)
       return
     }
     const rect = anchorRef.current?.getBoundingClientRect()
     if (!rect) return
-    const fitsBelow = rect.bottom + 4 + ESTIMATED_POPOVER_HEIGHT <= window.innerHeight
-    setPosition({
-      top: fitsBelow ? rect.bottom + 4 : Math.max(8, rect.top - ESTIMATED_POPOVER_HEIGHT - 4),
-      left: rect.left,
-    })
+    setPosition({ top: rect.bottom + 4, left: rect.left })
   }, [open, anchorRef])
+
+  // Pass 2: now that the popover is actually in the DOM, measure its
+  // real height. Only correct if it would genuinely overflow past the
+  // bottom of the viewport, and only by the minimum amount needed to
+  // bring it fully on-screen - it stays visually anchored just above/
+  // below the trigger rather than jumping to some other part of the page.
+  useLayoutEffect(() => {
+    if (!position || !popoverRef.current || correctedRef.current) return
+    const overflow = popoverRef.current.getBoundingClientRect().bottom - window.innerHeight
+    if (overflow > 0) {
+      correctedRef.current = true
+      setPosition((p) => (p ? { ...p, top: Math.max(8, p.top - overflow - 8) } : p))
+    }
+  }, [position])
 
   useEffect(() => {
     if (!open) return
