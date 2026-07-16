@@ -13,22 +13,30 @@ export interface NumberFieldProps extends Omit<FieldInputProps, 'type' | 'value'
 // "-" before the first digit or "." before the decimal digits.
 const VALID_PARTIAL = /^-?\d*\.?\d*$/
 
-function countDigits(s: string): number {
+// Counts digits AND the decimal point/minus sign - anything formatting
+// never removes. Counting digits alone breaks right after typing "." :
+// the caret sits immediately after a non-digit character, so a
+// digit-only count anchors it one position too early (before the dot
+// instead of after it), and the next typed digit lands on the wrong
+// side of the decimal point.
+function countSignificant(s: string): number {
   let n = 0
-  for (const ch of s) if (ch >= '0' && ch <= '9') n++
+  for (const ch of s) if ((ch >= '0' && ch <= '9') || ch === '.' || ch === '-') n++
   return n
 }
 
-/** Position right after the Nth digit in `formatted` (grouping spaces
- * don't count) - the inverse of countDigits, used to re-anchor the caret
- * after reformatting changes the string length. */
-function caretAfterDigit(formatted: string, digitCount: number): number {
-  if (digitCount <= 0) return 0
+/** Position right after the Nth significant (digit/./-) character in
+ * `formatted` (grouping spaces don't count) - the inverse of
+ * countSignificant, used to re-anchor the caret after reformatting
+ * changes the string length. */
+function caretAfterSignificant(formatted: string, count: number): number {
+  if (count <= 0) return 0
   let seen = 0
   for (let i = 0; i < formatted.length; i++) {
-    if (formatted[i] >= '0' && formatted[i] <= '9') {
+    const ch = formatted[i]
+    if ((ch >= '0' && ch <= '9') || ch === '.' || ch === '-') {
       seen++
-      if (seen === digitCount) return i + 1
+      if (seen === count) return i + 1
     }
   }
   return formatted.length
@@ -57,12 +65,12 @@ export function NumberField({ value, onChange, onFocus, style, ...rest }: Number
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const displayed = e.target.value
     const caretPos = e.target.selectionStart ?? displayed.length
-    const digitsBeforeCaret = countDigits(displayed.slice(0, caretPos))
+    const significantBeforeCaret = countSignificant(displayed.slice(0, caretPos))
 
     const cleaned = parseGroupedNumber(displayed)
     if (!VALID_PARTIAL.test(cleaned)) return // reject the keystroke, keep previous state
 
-    pendingCaret.current = caretAfterDigit(formatGroupedNumber(cleaned), digitsBeforeCaret)
+    pendingCaret.current = caretAfterSignificant(formatGroupedNumber(cleaned), significantBeforeCaret)
     onChange(cleaned)
   }
 

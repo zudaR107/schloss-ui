@@ -78,4 +78,16 @@ describe('NumberField', () => {
 
     expect(input).toHaveValue('5')
   })
+
+  it('typing digits after a decimal point inserts them after the point, not before it', async () => {
+    const user = userEvent.setup()
+    const onChangeSpy = vi.fn()
+    render(<Controlled onChangeSpy={onChangeSpy} />)
+
+    const input = screen.getByLabelText('Сумма')
+    await user.type(input, '10.50')
+
+    expect(onChangeSpy).toHaveBeenLastCalledWith('10.50')
+    expect(input).toHaveValue('10.50')
+  })
 })
