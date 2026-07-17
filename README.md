@@ -33,10 +33,25 @@ for what's left.
 
 `Header`, `Footer`, `EmptyState`, `Button`, `Badge`, `SegmentedControl`,
 `Field`, `NumberField`, `AmountField`, `DateField`, `DateRangeField`,
-`Modal`, `StatTile`, `Amount`, `Sparkline`, `Toast` — all exported from
-the package root (`import { Button } from '@zudar107/schloss-ui'`),
-styled entirely from the shared tokens plus each consumer's own
-`--accent`.
+`Modal`, `StatTile`, `Amount`, `Sparkline`, `Toast`, `ThemeToggle` — all
+exported from the package root (`import { Button } from
+'@zudar107/schloss-ui'`), styled entirely from the shared tokens plus
+each consumer's own `--accent`.
+
+`Header`'s avatar doubles as the account-settings entry point: when both
+`user` and `onSettings` are given it renders as a real button (there is
+no separate settings icon) — see the "unified account settings" contract
+documented in schlussel's own README for how `onSettings` is meant to be
+wired.
+
+`ThemeToggle` is a dropdown for picking one of the platform's four themes
+(`light`/`dark`/`oled`/`sepia`, see the `Theme`/`THEMES`/`getStoredTheme`/
+`applyTheme` exports it's built on). Its default look is a ghost icon
+button meant for a header's `rightSlot`; pass a `trigger` render prop
+(`({ theme, icon, onClick }) => ReactNode`) to fit it into a different
+context instead (e.g. a sidebar row) — see kuvert's `Layout.tsx` for an
+example — plus `align="left"|"right"` for which side the dropdown panel
+anchors to.
 
 `NumberField`/`AmountField` display thousand-space-grouped numbers while
 keeping the caller's state as a plain unformatted string, and select an
