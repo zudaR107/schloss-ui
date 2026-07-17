@@ -115,7 +115,9 @@ describe('Header', () => {
     expect(avatar.textContent?.trim()).toBe('Р')
   })
 
-  it('renders settings control when user and onSettings are both provided, and clicking it calls onSettings once', async () => {
+  it('renders the avatar as a settings control when user and onSettings are both provided, and clicking it calls onSettings once', async () => {
+    // There is no separate gear icon anymore - the avatar itself is the
+    // settings entry point when onSettings is given.
     const user = userEvent.setup()
     const onSettings = vi.fn()
     render(
@@ -127,12 +129,13 @@ describe('Header', () => {
       />,
     )
 
-    const settingsButton = screen.getByRole('button', { name: 'Настройки' })
-    await user.click(settingsButton)
+    const avatarButton = screen.getByRole('button', { name: 'Настройки аккаунта' })
+    expect(avatarButton).toHaveTextContent('Р')
+    await user.click(avatarButton)
     expect(onSettings).toHaveBeenCalledTimes(1)
   })
 
-  it('does not render settings control when user is provided but onSettings is not', () => {
+  it('renders the avatar as a plain non-interactive element (not a button) when user is provided but onSettings is not', () => {
     render(
       <Header
         logo={<span>LOGO-MARKER</span>}
@@ -142,11 +145,13 @@ describe('Header', () => {
     )
 
     expect(
-      screen.queryByRole('button', { name: 'Настройки' }),
+      screen.queryByRole('button', { name: 'Настройки аккаунта' }),
     ).not.toBeInTheDocument()
+    // The avatar itself must still render, just as non-interactive content.
+    expect(screen.getByTitle('Роберт Эванс')).toHaveTextContent('Р')
   })
 
-  it('does not render settings control when onSettings is provided but user is not', () => {
+  it('does not render a settings control when onSettings is provided but user is not (no avatar to click at all)', () => {
     render(
       <Header
         logo={<span>LOGO-MARKER</span>}
@@ -156,7 +161,7 @@ describe('Header', () => {
     )
 
     expect(
-      screen.queryByRole('button', { name: 'Настройки' }),
+      screen.queryByRole('button', { name: 'Настройки аккаунта' }),
     ).not.toBeInTheDocument()
   })
 
@@ -215,7 +220,7 @@ describe('Header', () => {
     ).toBeInTheDocument()
   })
 
-  it('clicking settings and logout controls only calls their callbacks, without throwing', async () => {
+  it('clicking the avatar (settings) and logout controls only calls their own callbacks, without throwing', async () => {
     const user = userEvent.setup()
     const onSettings = vi.fn()
     const onLogout = vi.fn()
@@ -229,7 +234,7 @@ describe('Header', () => {
       />,
     )
 
-    await user.click(screen.getByRole('button', { name: 'Настройки' }))
+    await user.click(screen.getByRole('button', { name: 'Настройки аккаунта' }))
     await user.click(screen.getByRole('button', { name: 'Выйти' }))
 
     expect(onSettings).toHaveBeenCalledTimes(1)
@@ -238,7 +243,7 @@ describe('Header', () => {
 })
 
 describe('Header icon button hover feedback', () => {
-  it('changes the settings button background on hover and reverts on unhover, without affecting which buttons are present or its click behavior', async () => {
+  it('changes the avatar (settings) box-shadow ring on hover and reverts on unhover, without affecting which buttons are present or its click behavior', async () => {
     const user = userEvent.setup()
     const onSettings = vi.fn()
     const onLogout = vi.fn()
@@ -252,25 +257,25 @@ describe('Header icon button hover feedback', () => {
       />,
     )
 
-    const settingsButton = screen.getByRole('button', { name: 'Настройки' })
+    const avatarButton = screen.getByRole('button', { name: 'Настройки аккаунта' })
     const logoutButton = screen.getByRole('button', { name: 'Выйти' })
-    const originalBackground = settingsButton.style.background
+    const originalShadow = avatarButton.style.boxShadow
 
-    await user.hover(settingsButton)
-    expect(settingsButton.style.background).not.toBe(originalBackground)
+    await user.hover(avatarButton)
+    expect(avatarButton.style.boxShadow).not.toBe(originalShadow)
 
-    await user.unhover(settingsButton)
-    expect(settingsButton.style.background).toBe(originalBackground)
+    await user.unhover(avatarButton)
+    expect(avatarButton.style.boxShadow).toBe(originalShadow)
 
     // Hovering does not change which buttons are present.
     expect(
-      screen.getByRole('button', { name: 'Настройки' }),
+      screen.getByRole('button', { name: 'Настройки аккаунта' }),
     ).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Выйти' })).toBeInTheDocument()
 
     // Click-after-hover still fires the callback as expected.
-    await user.hover(settingsButton)
-    await user.click(settingsButton)
+    await user.hover(avatarButton)
+    await user.click(avatarButton)
     expect(onSettings).toHaveBeenCalledTimes(1)
     expect(onLogout).not.toHaveBeenCalled()
 

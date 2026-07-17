@@ -46,9 +46,14 @@ export type { SparklineProps } from './components/Sparkline'
 export { Toast } from './components/Toast'
 export type { ToastProps, ToastVariant } from './components/Toast'
 
+export { ThemeToggle } from './components/ThemeToggle'
+export type { ThemeToggleProps, ThemeToggleTriggerProps } from './components/ThemeToggle'
+
 export { ICON_SIZE } from './iconSize'
 export type { IconSizeName } from './iconSize'
 
 export { handleArrowFieldNavigation } from './lib/formNavigation'
 export { formatGroupedNumber, parseGroupedNumber } from './lib/numberFormat'
 export { currencySymbol } from './lib/currency'
+export { THEMES, getStoredTheme, applyTheme } from './lib/theme'
+export type { Theme } from './lib/theme'
